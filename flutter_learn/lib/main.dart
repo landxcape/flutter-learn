@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 
 import './quiz.dart';
 import './result.dart';
-// import './question.dart';
-// import './answer.dart';
 
 void main() => runApp(MyApp());
 
