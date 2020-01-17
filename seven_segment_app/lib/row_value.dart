@@ -1,41 +1,68 @@
 import 'package:flutter/material.dart';
 
 class RowValue extends StatefulWidget {
-  final int rowIterate;
-  final int rowSize;
-  final int rowNumber;
+  final Function rowUpdate;
 
-  RowValue({this.rowIterate, this.rowSize, this.rowNumber});
+  final int rowIndex;
+  final String rowSize;
+  final String rowNumber;
+
+  RowValue({
+    this.rowUpdate,
+    this.rowIndex,
+    this.rowSize,
+    this.rowNumber,
+  });
 
   @override
   _RowValueState createState() => _RowValueState(
-      rowIterate: rowIterate, rowSize: rowSize, rowNumber: rowNumber);
+        rowUpdate: rowUpdate,
+        rowIndex: rowIndex,
+        rowSize: rowSize,
+        rowNumber: rowNumber,
+      );
 }
 
 class _RowValueState extends State<RowValue> {
-  final int rowIterate;
-  final int rowSize;
-  final int rowNumber;
-  final TextEditingController myController = new TextEditingController();
+  final Function rowUpdate;
 
-  textListener() {
-    print('text $rowIterate: ${myController.text}');
+  final int rowIndex;
+  String rowSize;
+  String rowNumber;
+
+  final TextEditingController rowNumberController = new TextEditingController();
+  final TextEditingController rowSizeController = new TextEditingController();
+
+  _RowValueState({this.rowUpdate, this.rowIndex, this.rowSize, this.rowNumber});
+
+  rowSizeListener() {
+    rowSize = rowSizeController.text;
+    rowUpdate(rowIndex, 'size', rowSize);
+  }
+
+  rowValueListener() {
+    rowNumber = rowNumberController.text;
+    while (rowNumber.length < int.parse(rowSize)) {
+      rowNumber = '0' + rowNumber;
+    }
+    rowUpdate(rowIndex, 'value', rowNumber);
   }
 
   @override
   void initState() {
     super.initState();
-    myController.addListener(textListener);
-    myController.text = '$rowNumber';
+    rowSizeController.addListener(rowSizeListener);
+    rowSizeController.text = '$rowSize';
+    rowNumberController.addListener(rowValueListener);
+    rowNumberController.text = '$rowNumber';
   }
 
   @override
   void dispose() {
-    myController.dispose();
+    rowNumberController.dispose();
+    rowSizeController.dispose();
     super.dispose();
   }
-
-  _RowValueState({this.rowIterate, this.rowSize, this.rowNumber});
 
   @override
   Widget build(BuildContext context) {
@@ -43,18 +70,34 @@ class _RowValueState extends State<RowValue> {
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
         Expanded(
-          child: Text('Row $rowIterate'),
+          child: Text('Row $rowIndex'),
+        ),
+        Expanded(
+          child: TextField(
+            textAlign: TextAlign.center,
+            controller: rowSizeController,
+            maxLength: 1,
+            maxLengthEnforced: true,
+            keyboardType: TextInputType.number,
+            decoration: InputDecoration(
+              border:
+                  OutlineInputBorder(borderRadius: BorderRadius.circular(20)),
+              hintText: 'Row $rowIndex',
+            ),
+          ),
         ),
         Expanded(
           flex: 2,
           child: TextField(
-            controller: myController,
-            maxLength: rowSize,
+            textAlign: TextAlign.end,
+            controller: rowNumberController,
+            maxLength: int.parse(rowSize),
             maxLengthEnforced: true,
+            keyboardType: TextInputType.number,
             decoration: InputDecoration(
               border:
                   OutlineInputBorder(borderRadius: BorderRadius.circular(20)),
-              hintText: 'Row $rowIterate',
+              hintText: 'Row $rowIndex',
             ),
           ),
         ),

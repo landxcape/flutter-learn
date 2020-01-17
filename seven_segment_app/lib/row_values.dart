@@ -3,18 +3,30 @@ import 'package:flutter/material.dart';
 import './row_value.dart';
 
 class RowValues extends StatefulWidget {
+  final List<Map<String, Object>> config;
   final List<Map<String, Object>> rowContaints;
+  final Function rowUpdate;
 
-  RowValues({@required this.rowContaints});
+  RowValues({
+    @required this.config,
+    @required this.rowContaints,
+    @required this.rowUpdate,
+  });
 
   @override
-  _RowValuesState createState() => _RowValuesState(rowContaints: rowContaints);
+  _RowValuesState createState() => _RowValuesState(
+        config: config,
+        rowContaints: rowContaints,
+        rowUpdate: rowUpdate,
+      );
 }
 
 class _RowValuesState extends State<RowValues> {
+  List<Map<String, Object>> config;
   final List<Map<String, Object>> rowContaints;
+  final Function rowUpdate;
 
-  _RowValuesState({this.rowContaints});
+  _RowValuesState({this.config, this.rowContaints, this.rowUpdate});
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +40,8 @@ class _RowValuesState extends State<RowValues> {
               ...(rowContaints[i]['rows'] as List<Map<String, Object>>)
                   .map((rows) {
                 return RowValue(
-                  rowIterate: i,
+                  rowUpdate: rowUpdate,
+                  rowIndex: i,
                   rowSize: rows['size'],
                   rowNumber: rows['value'],
                 );
