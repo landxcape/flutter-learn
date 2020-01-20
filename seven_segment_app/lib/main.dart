@@ -12,64 +12,86 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  @override
-  void initState() {
-    _readConfig();
-    _readRowValues();
-
-    rowsContaints(_rowContaints, _configArray);
-
-    super.initState();
-  }
-
-  List<Map<String, Object>> _configArray = [
+  List<Map<String, String>> _configArray = [
     {
-      'columns': '4',
+      'maxColumn': '4',
       'totalRows': '15',
-      'loopTime': '6000',
-      'commonCathode': 1,
+      'totalLoopTime': '6000',
+      'commonCathode': '1',
     }
   ];
 
-  List<Map<String, List<Map<String, Object>>>> _rowContaints =
-      new List<Map<String, List<Map<String, Object>>>>();
+  // List<Map<String, String>> _configArray = new List<Map<String, String>>();
 
-  _saveConfig(var _configArray) async {
+  List<Map<String, List<Map<String, String>>>> _rowContaints =
+      new List<Map<String, List<Map<String, String>>>>();
+
+  @override
+  void initState() {
+    super.initState();
+    setState(() {
+      _readConfig();
+      _readRowValues();
+
+      rowsContaints();
+    });
+  }
+
+  _saveConfig() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setStringList('config_list', _configArray);
+    prefs.setString('maxColumn', _configArray[0]['maxColumn']);
+    prefs.setString('totalRows', _configArray[0]['totalRows']);
+    prefs.setString('totalLoopTime', _configArray[0]['totalLoopTime']);
+    prefs.setString('commonCathode', _configArray[0]['commonCathode']);
   }
 
   _readConfig() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    _configArray = prefs.getStringList('config_list') ?? [];
+    setState(() {
+      _configArray[0]['maxColumn'] = prefs.getString('maxColumn') ?? '4';
+      _configArray[0]['totalRows'] = prefs.getString('totalRows') ?? '10';
+      _configArray[0]['totalLoopTime'] =
+          prefs.getString('totalLoopTime') ?? '6000';
+      _configArray[0]['commonCathode'] =
+          prefs.getString('commonCathode') ?? '1';
+      rowsContaints();
+    });
   }
 
   _saveRowValues(var _rowValues) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setStringList('rowValues_list', _rowValues);
+    for (int i = 0; i < _rowContaints.length; i++) {
+      prefs.setString('rowValues_list_$i', _rowValues[i]['rows'][0]['size']);
+      prefs.setString('rowValues_list_$i', _rowValues[i]['rows'][0]['value']);
+    }
   }
 
   _readRowValues() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    _rowContaints = prefs.getStringList('rowValues_list') ?? [];
+    setState(() {
+      _rowContaints = prefs.getString('rowValues_list') ?? '';
+    });
+  }
+
+  void _configUpdate(int configIndex, String key, String updatedValue) {
+    _configArray[configIndex][key] = updatedValue;
   }
 
   void _rowUpdate(int rowIndex, String key, String updatedValue) {
     _rowContaints[rowIndex]['rows'][0][key] = updatedValue;
   }
 
-  // List<Map<String, List<Map<String, Object>>>>
-  void rowsContaints(var rowContaints, var configArray) {
-    if (rowContaints.length < int.parse(configArray[0]['totalRows'])) {
-      for (int i = rowContaints.length;
-          i < int.parse(configArray[0]['totalRows']);
+  void rowsContaints() {
+    if (_rowContaints.length < int.parse(_configArray[0]['totalRows'])) {
+      for (int i = _rowContaints.length;
+          i < int.parse(_configArray[0]['totalRows']);
           i++) {
         setState(() {
           _rowContaints.addAll([
             {
               'rows': [
                 {
-                  'size': configArray[0]['columns'],
+                  'size': _configArray[0]['maxColumn'],
                   'value': '0000',
                 },
               ],
@@ -78,6 +100,13 @@ class _MyAppState extends State<MyApp> {
         });
       }
     }
+  }
+
+  void btnUpload() {
+    setState(() {
+      _saveConfig();
+      _saveRowValues(_rowContaints);
+    });
   }
 
   @override
@@ -95,6 +124,7 @@ class _MyAppState extends State<MyApp> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: <Widget>[
                 ConfigArray(
+                  configUpdate: _configUpdate,
                   configArray: _configArray,
                 ),
                 RowValues(
@@ -108,7 +138,7 @@ class _MyAppState extends State<MyApp> {
         ),
         floatingActionButton: FloatingActionButton.extended(
           splashColor: Colors.indigo[200],
-          onPressed: () {},
+          onPressed: btnUpload,
           label: Text('Upload'),
           icon: Icon(Icons.file_upload),
           backgroundColor: Colors.indigo,

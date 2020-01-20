@@ -30,8 +30,8 @@ class _RowValueState extends State<RowValue> {
   String rowSize;
   String rowNumber;
 
-  final TextEditingController rowNumberController = new TextEditingController();
   final TextEditingController rowSizeController = new TextEditingController();
+  final TextEditingController rowNumberController = new TextEditingController();
 
   _RowValueState({this.rowUpdate, this.rowIndex, this.rowSize, this.rowNumber});
 
@@ -51,10 +51,11 @@ class _RowValueState extends State<RowValue> {
   @override
   void initState() {
     super.initState();
+
+    rowSizeController.text = rowSize;
+    rowNumberController.text = rowNumber;
     rowSizeController.addListener(rowSizeListener);
-    rowSizeController.text = '$rowSize';
     rowNumberController.addListener(rowValueListener);
-    rowNumberController.text = '$rowNumber';
   }
 
   @override
@@ -86,6 +87,7 @@ class _RowValueState extends State<RowValue> {
             ),
           ),
         ),
+        SizedBox(width: 5),
         Expanded(
           flex: 2,
           child: TextField(

@@ -1,30 +1,75 @@
 import 'package:flutter/material.dart';
 
 class ConfigArray extends StatefulWidget {
-  final List<Map<String, Object>> configArray;
+  final Function configUpdate;
+  final List<Map<String, String>> configArray;
 
-  ConfigArray({@required this.configArray});
+  ConfigArray({@required this.configUpdate, @required this.configArray});
 
   @override
   _ConfigArrayState createState() =>
-      _ConfigArrayState(configArray: configArray);
+      _ConfigArrayState(configUpdate: configUpdate, configArray: configArray);
 }
 
 class _ConfigArrayState extends State<ConfigArray> {
-  List<Map<String, Object>> configArray;
+  final Function configUpdate;
+  List<Map<String, String>> configArray;
 
-  final TextEditingController rowNumberController = new TextEditingController();
-  final TextEditingController rowSizeController = new TextEditingController();
+  int configIndex = 0;
+  String maxColumn;
+  String totalRows;
+  String totalLoopTime;
+  String commonCathode;
 
-  _ConfigArrayState({this.configArray});
+  final TextEditingController maxColumnController = new TextEditingController();
+  final TextEditingController totalRowsController = new TextEditingController();
+  final TextEditingController totalLTController = new TextEditingController();
+  final TextEditingController commonCController = new TextEditingController();
+
+  _ConfigArrayState({this.configUpdate, this.configArray});
+
+  maxColumnListener() {
+    maxColumn = maxColumnController.text;
+    configUpdate(configIndex, 'maxColumn', maxColumn);
+  }
+
+  totalRowsListener() {
+    totalRows = totalRowsController.text;
+    configUpdate(configIndex, 'totalRows', totalRows);
+  }
+
+  totalLTListener() {
+    totalLoopTime = totalLTController.text;
+    configUpdate(configIndex, 'totalLoopTime', totalLoopTime);
+  }
+
+  commonCListener() {
+    commonCathode = commonCController.text;
+    configUpdate(configIndex, 'commonCathode', commonCathode);
+  }
 
   @override
   void initState() {
     super.initState();
+
+    maxColumnController.text = configArray[0]['maxColumn'];
+    totalRowsController.text = configArray[0]['totalRows'];
+    totalLTController.text = configArray[0]['totalLoopTime'];
+    commonCController.text = configArray[0]['commonCathode'];
+
+    maxColumnController.addListener(maxColumnListener);
+    totalRowsController.addListener(totalRowsListener);
+    totalLTController.addListener(totalLTListener);
+    commonCController.addListener(commonCListener);
   }
 
   @override
   void dispose() {
+    maxColumnController.dispose();
+    totalRowsController.dispose();
+    totalLTController.dispose();
+    commonCController.dispose();
+
     super.dispose();
   }
 
@@ -40,12 +85,12 @@ class _ConfigArrayState extends State<ConfigArray> {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 Expanded(
-                  child: Text('Columns'),
+                  child: Text('Max Columns'),
                 ),
                 Expanded(
                   child: TextField(
                     textAlign: TextAlign.end,
-                    controller: rowNumberController,
+                    controller: maxColumnController,
                     maxLength: 2,
                     maxLengthEnforced: true,
                     keyboardType: TextInputType.number,
@@ -62,12 +107,12 @@ class _ConfigArrayState extends State<ConfigArray> {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 Expanded(
-                  child: Text('Rows'),
+                  child: Text('Total Rows'),
                 ),
                 Expanded(
                   child: TextField(
                     textAlign: TextAlign.end,
-                    controller: rowNumberController,
+                    controller: totalRowsController,
                     maxLength: 2,
                     maxLengthEnforced: true,
                     keyboardType: TextInputType.number,
@@ -89,7 +134,7 @@ class _ConfigArrayState extends State<ConfigArray> {
                 Expanded(
                   child: TextField(
                     textAlign: TextAlign.end,
-                    controller: rowNumberController,
+                    controller: totalLTController,
                     maxLength: 4,
                     maxLengthEnforced: true,
                     keyboardType: TextInputType.number,
@@ -111,7 +156,7 @@ class _ConfigArrayState extends State<ConfigArray> {
                 Expanded(
                   child: TextField(
                     textAlign: TextAlign.end,
-                    controller: rowNumberController,
+                    controller: commonCController,
                     maxLength: 1,
                     maxLengthEnforced: true,
                     keyboardType: TextInputType.number,

@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import './row_value.dart';
 
 class RowValues extends StatefulWidget {
-  final List<Map<String, Object>> configArray;
-  final List<Map<String, Object>> rowContaints;
+  final List<Map<String, String>> configArray;
+  final List<Map<String, List<Map<String, String>>>> rowContaints;
   final Function rowUpdate;
 
   RowValues({
@@ -22,8 +22,8 @@ class RowValues extends StatefulWidget {
 }
 
 class _RowValuesState extends State<RowValues> {
-  List<Map<String, Object>> configArray;
-  List<Map<String, Object>> rowContaints;
+  List<Map<String, String>> configArray;
+  List<Map<String, List<Map<String, String>>>> rowContaints;
   final Function rowUpdate;
 
   _RowValuesState({this.configArray, this.rowContaints, this.rowUpdate});
