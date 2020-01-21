@@ -58,18 +58,29 @@ class _MyAppState extends State<MyApp> {
     });
   }
 
-  _saveRowValues(var _rowValues) async {
+  _saveRowValues() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     for (int i = 0; i < _rowContaints.length; i++) {
-      prefs.setString('rowValues_list_$i', _rowValues[i]['rows'][0]['size']);
-      prefs.setString('rowValues_list_$i', _rowValues[i]['rows'][0]['value']);
+      if (i < int.parse(_configArray[0]['totalRows'])) {
+        prefs.setString(
+            'rowValues_list_size_$i', _rowContaints[i]['rows'][0]['size']);
+        prefs.setString(
+            'rowValues_list_value_$i', _rowContaints[i]['rows'][0]['value']);
+      } else {
+        _rowContaints.pop();
+      }
     }
   }
 
   _readRowValues() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
-      _rowContaints = prefs.getString('rowValues_list') ?? '';
+      for (int i = 0; i < int.parse(_configArray[0]['totalRows']); i++) {
+        _rowContaints[i]['rows'][0]['size'] =
+            prefs.getString('rowValues_list_size_$i') ?? '';
+        _rowContaints[i]['rows'][0]['value'] =
+            prefs.getString('rowValues_list_value_$i') ?? '';
+      }
     });
   }
 
@@ -82,11 +93,11 @@ class _MyAppState extends State<MyApp> {
   }
 
   void rowsContaints() {
-    if (_rowContaints.length < int.parse(_configArray[0]['totalRows'])) {
-      for (int i = _rowContaints.length;
-          i < int.parse(_configArray[0]['totalRows']);
-          i++) {
-        setState(() {
+    setState(() {
+      if (_rowContaints.length < int.parse(_configArray[0]['totalRows'])) {
+        for (int i = _rowContaints.length;
+            i < int.parse(_configArray[0]['totalRows']);
+            i++) {
           _rowContaints.addAll([
             {
               'rows': [
@@ -97,15 +108,18 @@ class _MyAppState extends State<MyApp> {
               ],
             },
           ]);
-        });
+        }
       }
-    }
+    });
   }
 
   void btnUpload() {
     setState(() {
       _saveConfig();
-      _saveRowValues(_rowContaints);
+      _saveRowValues();
+      _readConfig();
+      _readRowValues();
+      rowsContaints();
     });
   }
 

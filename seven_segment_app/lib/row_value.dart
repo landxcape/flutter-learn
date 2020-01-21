@@ -93,8 +93,8 @@ class _RowValueState extends State<RowValue> {
           child: TextField(
             textAlign: TextAlign.end,
             controller: rowNumberController,
-            maxLength: int.parse(rowSize),
-            maxLengthEnforced: true,
+            // maxLength: int.parse(rowSize),
+            // maxLengthEnforced: true,
             keyboardType: TextInputType.number,
             decoration: InputDecoration(
               border:
