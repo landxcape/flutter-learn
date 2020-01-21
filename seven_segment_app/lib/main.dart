@@ -54,7 +54,7 @@ class _MyAppState extends State<MyApp> {
           prefs.getString('totalLoopTime') ?? '6000';
       _configArray[0]['commonCathode'] =
           prefs.getString('commonCathode') ?? '1';
-      rowsContaints();
+      // rowsContaints();
     });
   }
 
@@ -67,7 +67,7 @@ class _MyAppState extends State<MyApp> {
         prefs.setString(
             'rowValues_list_value_$i', _rowContaints[i]['rows'][0]['value']);
       } else {
-        _rowContaints.pop();
+        _rowContaints.removeAt(i);
       }
     }
   }
@@ -75,12 +75,16 @@ class _MyAppState extends State<MyApp> {
   _readRowValues() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
+      List<Map<String, List<Map<String, String>>>> rC;
+      // _rowContaints.clear();
       for (int i = 0; i < int.parse(_configArray[0]['totalRows']); i++) {
-        _rowContaints[i]['rows'][0]['size'] =
+        rC[i]['rows'][0]['size'] =
             prefs.getString('rowValues_list_size_$i') ?? '';
-        _rowContaints[i]['rows'][0]['value'] =
+        rC[i]['rows'][0]['value'] =
             prefs.getString('rowValues_list_value_$i') ?? '';
+        _rowContaints.addAll(rC);
       }
+      // rowsContaints();
     });
   }
 
