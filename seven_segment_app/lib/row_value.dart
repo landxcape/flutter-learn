@@ -36,16 +36,20 @@ class _RowValueState extends State<RowValue> {
   _RowValueState({this.rowUpdate, this.rowIndex, this.rowSize, this.rowNumber});
 
   rowSizeListener() {
-    rowSize = rowSizeController.text;
-    rowUpdate(rowIndex, 'size', rowSize);
+    setState(() {
+      rowSize = rowSizeController.text;
+      rowUpdate(rowIndex, 'size', rowSize);
+    });
   }
 
   rowValueListener() {
-    rowNumber = rowNumberController.text;
-    while (rowNumber.length < int.parse(rowSize)) {
-      rowNumber = '0' + rowNumber;
-    }
-    rowUpdate(rowIndex, 'value', rowNumber);
+    setState(() {
+      rowNumber = rowNumberController.text;
+      while (rowNumber.length < int.parse(rowSize)) {
+        rowNumber = '0' + rowNumber;
+      }
+      rowUpdate(rowIndex, 'value', rowNumber);
+    });
   }
 
   @override

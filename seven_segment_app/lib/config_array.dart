@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ConfigArray extends StatefulWidget {
   final Function configUpdate;
@@ -29,38 +30,60 @@ class _ConfigArrayState extends State<ConfigArray> {
   _ConfigArrayState({this.configUpdate, this.configArray});
 
   maxColumnListener() {
-    maxColumn = maxColumnController.text;
-    configUpdate(configIndex, 'maxColumn', maxColumn);
+    setState(() {
+      maxColumn = maxColumnController.text;
+      configUpdate(configIndex, 'maxColumn', maxColumn);
+    });
   }
 
   totalRowsListener() {
-    totalRows = totalRowsController.text;
-    configUpdate(configIndex, 'totalRows', totalRows);
+    setState(() {
+      totalRows = totalRowsController.text;
+      configUpdate(configIndex, 'totalRows', totalRows);
+    });
   }
 
   totalLTListener() {
-    totalLoopTime = totalLTController.text;
-    configUpdate(configIndex, 'totalLoopTime', totalLoopTime);
+    setState(() {
+      totalLoopTime = totalLTController.text;
+      configUpdate(configIndex, 'totalLoopTime', totalLoopTime);
+    });
   }
 
   commonCListener() {
-    commonCathode = commonCController.text;
-    configUpdate(configIndex, 'commonCathode', commonCathode);
+    setState(() {
+      commonCathode = commonCController.text;
+      configUpdate(configIndex, 'commonCathode', commonCathode);
+    });
+  }
+
+  _readConfig() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      configArray[0]['maxColumn'] = prefs.getString('maxColumn') ?? '4';
+      configArray[0]['totalRows'] = prefs.getString('totalRows') ?? '10';
+      configArray[0]['totalLoopTime'] =
+          prefs.getString('totalLoopTime') ?? '6000';
+      configArray[0]['commonCathode'] = prefs.getString('commonCathode') ?? '1';
+    });
   }
 
   @override
   void initState() {
+    setState(() {
+      _readConfig();
+      maxColumnController.text = configArray[0]['maxColumn'];
+      totalRowsController.text = configArray[0]['totalRows'];
+      totalLTController.text = configArray[0]['totalLoopTime'];
+      commonCController.text = configArray[0]['commonCathode'];
+
+      maxColumnController.addListener(maxColumnListener);
+      totalRowsController.addListener(totalRowsListener);
+      totalLTController.addListener(totalLTListener);
+      commonCController.addListener(commonCListener);
+    });
+
     super.initState();
-
-    maxColumnController.text = configArray[0]['maxColumn'];
-    totalRowsController.text = configArray[0]['totalRows'];
-    totalLTController.text = configArray[0]['totalLoopTime'];
-    commonCController.text = configArray[0]['commonCathode'];
-
-    maxColumnController.addListener(maxColumnListener);
-    totalRowsController.addListener(totalRowsListener);
-    totalLTController.addListener(totalLTListener);
-    commonCController.addListener(commonCListener);
   }
 
   @override

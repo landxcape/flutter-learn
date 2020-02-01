@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -28,13 +30,13 @@ class _MyAppState extends State<MyApp> {
 
   @override
   void initState() {
-    super.initState();
     setState(() {
       _readConfig();
       _readRowValues();
 
       rowsContaints();
     });
+    super.initState();
   }
 
   _saveConfig() async {
@@ -54,7 +56,6 @@ class _MyAppState extends State<MyApp> {
           prefs.getString('totalLoopTime') ?? '6000';
       _configArray[0]['commonCathode'] =
           prefs.getString('commonCathode') ?? '1';
-      // rowsContaints();
     });
   }
 
@@ -75,7 +76,8 @@ class _MyAppState extends State<MyApp> {
   _readRowValues() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
-      List<Map<String, List<Map<String, String>>>> rC;
+      List<Map<String, List<Map<String, String>>>> rC =
+          new List<Map<String, List<Map<String, String>>>>();
       // _rowContaints.clear();
       for (int i = 0; i < int.parse(_configArray[0]['totalRows']); i++) {
         rC[i]['rows'][0]['size'] =
@@ -84,7 +86,6 @@ class _MyAppState extends State<MyApp> {
             prefs.getString('rowValues_list_value_$i') ?? '';
         _rowContaints.addAll(rC);
       }
-      // rowsContaints();
     });
   }
 
@@ -117,6 +118,26 @@ class _MyAppState extends State<MyApp> {
     });
   }
 
+  Future<Container> _bodySevenSegment() async {
+    return Container(
+      padding: const EdgeInsets.all(8),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[
+          ConfigArray(
+            configUpdate: _configUpdate,
+            configArray: _configArray,
+          ),
+          RowValues(
+            configArray: _configArray,
+            rowUpdate: _rowUpdate,
+            rowContaints: _rowContaints,
+          ),
+        ],
+      ),
+    );
+  }
+
   void btnUpload() {
     setState(() {
       _saveConfig();
@@ -129,30 +150,27 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return new MaterialApp(
       theme: ThemeData(primarySwatch: Colors.indigo),
       home: Scaffold(
         appBar: AppBar(
           title: Text('Seven Segment App'),
         ),
-        body: SingleChildScrollView(
-          child: Container(
-            padding: const EdgeInsets.all(8),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: <Widget>[
-                ConfigArray(
-                  configUpdate: _configUpdate,
-                  configArray: _configArray,
+        body: FutureBuilder(
+          future: _bodySevenSegment(),
+          builder: (BuildContext context, AsyncSnapshot snapshot) {
+            if (snapshot.data == null) {
+              return Container(
+                child: Center(
+                  child: Text("Loading..."),
                 ),
-                RowValues(
-                  configArray: _configArray,
-                  rowUpdate: _rowUpdate,
-                  rowContaints: _rowContaints,
-                ),
-              ],
-            ),
-          ),
+              );
+            } else {
+              return SingleChildScrollView(
+                child: snapshot.data,
+              );
+            }
+          },
         ),
         floatingActionButton: FloatingActionButton.extended(
           splashColor: Colors.indigo[200],
