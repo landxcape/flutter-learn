@@ -23,6 +23,7 @@ class _MyAppState extends State<MyApp> {
           child: JoystickView(
             backgroundColor: Colors.black54,
             innerCircleColor: Colors.black87,
+            // onDirectionChanged: ,
           ),
         ),
       ),
