@@ -1,8 +1,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-import './who_are_you.dart';
 import 'who_are_you.dart';
+import 'our_sense_organs.dart';
 
 void main() => runApp(MyApp());
 
@@ -23,6 +23,7 @@ class _MyAppState extends State<MyApp> {
       home: HomePage(),
       routes: <String, WidgetBuilder>{
         "/whoareyou": (BuildContext context) => WhoAreYou(),
+        "/oursenseorgans": (BuildContext context) => OurSenseOrgans(),
       },
     );
   }
@@ -85,6 +86,10 @@ class _HomePageState extends State<HomePage> {
             ListTile(
               title: Text('Our Sense Organs!'),
               leading: Icon(Icons.face),
+              onTap: () {
+                Navigator.of(context).pop();
+                Navigator.of(context).pushNamed('/oursenseorgans');
+              },
             ),
             ListTile(
               title: Text('What can you Smell?'),

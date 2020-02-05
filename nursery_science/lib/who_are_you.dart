@@ -6,6 +6,14 @@ class WhoAreYou extends StatefulWidget {
 }
 
 class _WhoAreYouState extends State<WhoAreYou> {
+  String gender = '';
+
+  onImageTap(String gender) {
+    setState(() {
+      this.gender = '$gender!!';
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -17,43 +25,41 @@ class _WhoAreYouState extends State<WhoAreYou> {
           Text(
             'Who Are You?',
             textAlign: TextAlign.center,
+            textScaleFactor: 2.0,
+          ),
+          Text('', textScaleFactor: 3.0),
+          Text(
+            'I am a $gender',
+            textAlign: TextAlign.center,
+            textScaleFactor: 2.0,
           ),
           Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               Expanded(
-                child: Image.asset(
-                  'assets/images/boy.png',
-                  fit: BoxFit.scaleDown,
+                child: GestureDetector(
+                  onTap: () {
+                    print('boy');
+                    onImageTap('Boy');
+                  },
+                  child: Image.asset(
+                    'assets/images/boy.png',
+                    fit: BoxFit.scaleDown,
+                  ),
                 ),
               ),
               Expanded(
-                child: Image.asset(
-                  'assets/images/girl.png',
-                  fit: BoxFit.scaleDown,
+                child: GestureDetector(
+                  onTap: () {
+                    print('girl');
+                    onImageTap('Girl');
+                  },
+                  child: Image.asset(
+                    'assets/images/girl.png',
+                    fit: BoxFit.scaleDown,
+                  ),
                 ),
-              ),
-            ],
-          ),
-          ButtonBar(
-            alignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Radio(
-                value: 'Boy',
-                groupValue: 1,
-                activeColor: Colors.pink,
-                onChanged: (val) {
-                  print("Radio $val");
-                },
-              ),
-              Radio(
-                value: 'Girl',
-                groupValue: 1,
-                activeColor: Colors.pink,
-                onChanged: (val) {
-                  print("Radio $val");
-                },
               ),
             ],
           ),
