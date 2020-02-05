@@ -13,7 +13,44 @@ class _OurSenseOrgansState extends State<OurSenseOrgans> {
         title: Text('Our Sense Organs!'),
       ),
       body: ListView(
-        children: <Widget>[],
+        children: <Widget>[
+          GestureDetector(
+            onTap: () {},
+            child: Image.asset(
+              'assets/images/sense_organs/eyes.png',
+              fit: BoxFit.scaleDown,
+            ),
+          ),
+          Text(''),
+          GestureDetector(
+            child: Image.asset(
+              'assets/images/sense_organs/nose.png',
+              fit: BoxFit.scaleDown,
+            ),
+          ),
+          Text(''),
+          GestureDetector(
+            child: Image.asset(
+              'assets/images/sense_organs/hand.png',
+              fit: BoxFit.scaleDown,
+            ),
+          ),
+          Text(''),
+          GestureDetector(
+            child: Image.asset(
+              'assets/images/sense_organs/ears.png',
+              fit: BoxFit.scaleDown,
+            ),
+          ),
+          Text(''),
+          GestureDetector(
+            child: Image.asset(
+              'assets/images/sense_organs/tongue.png',
+              fit: BoxFit.scaleDown,
+            ),
+          ),
+          Text(''),
+        ],
       ),
     );
   }

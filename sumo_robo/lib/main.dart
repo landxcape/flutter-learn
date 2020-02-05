@@ -9,6 +9,14 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  var testDirection;
+
+  JoystickDirectionCallback onDirectionChanged(
+      double degrees, double distance) {
+    print(
+        "Degree :${degrees.toStringAsFixed(2)},distance:${distance.toStringAsFixed(2)}");
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -23,7 +31,7 @@ class _MyAppState extends State<MyApp> {
           child: JoystickView(
             backgroundColor: Colors.black54,
             innerCircleColor: Colors.black87,
-            // onDirectionChanged: ,
+            onDirectionChanged: onDirectionChanged,
           ),
         ),
       ),

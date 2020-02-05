@@ -10,7 +10,7 @@ class _WhoAreYouState extends State<WhoAreYou> {
 
   onImageTap(String gender) {
     setState(() {
-      this.gender = '$gender!!';
+      this.gender = '$gender!';
     });
   }
 
@@ -25,13 +25,13 @@ class _WhoAreYouState extends State<WhoAreYou> {
           Text(
             'Who Are You?',
             textAlign: TextAlign.center,
-            textScaleFactor: 2.0,
+            style: TextStyle(fontSize: 30.0),
           ),
           Text('', textScaleFactor: 3.0),
           Text(
             'I am a $gender',
             textAlign: TextAlign.center,
-            textScaleFactor: 2.0,
+            style: TextStyle(fontSize: 30.0),
           ),
           Row(
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -44,7 +44,7 @@ class _WhoAreYouState extends State<WhoAreYou> {
                     onImageTap('Boy');
                   },
                   child: Image.asset(
-                    'assets/images/boy.png',
+                    'assets/images/gender/boy.png',
                     fit: BoxFit.scaleDown,
                   ),
                 ),
@@ -56,7 +56,7 @@ class _WhoAreYouState extends State<WhoAreYou> {
                     onImageTap('Girl');
                   },
                   child: Image.asset(
-                    'assets/images/girl.png',
+                    'assets/images/gender/girl.png',
                     fit: BoxFit.scaleDown,
                   ),
                 ),
