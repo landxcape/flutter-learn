@@ -3,6 +3,10 @@ import 'package:flutter/material.dart';
 
 import 'who_are_you.dart';
 import 'our_sense_organs.dart';
+import 'what_can_you_smell.dart';
+import 'what_can_you_see.dart';
+import 'what_can_you_hear.dart';
+import 'what_can_you_taste.dart';
 
 void main() => runApp(MyApp());
 
@@ -24,6 +28,10 @@ class _MyAppState extends State<MyApp> {
       routes: <String, WidgetBuilder>{
         "/whoareyou": (BuildContext context) => WhoAreYou(),
         "/oursenseorgans": (BuildContext context) => OurSenseOrgans(),
+        "/whatcanyousmell": (BuildContext context) => WhatCanYouSmell(),
+        "/whatcanyousee": (BuildContext context) => WhatCanYouSee(),
+        "/whatcanyouhear": (BuildContext context) => WhatCanYouHear(),
+        "/whatcanyoutaste": (BuildContext context) => WhatCanYouTaste(),
       },
     );
   }
@@ -94,18 +102,34 @@ class _HomePageState extends State<HomePage> {
             ListTile(
               title: Text('What can you Smell?'),
               leading: Icon(Icons.face),
+              onTap: () {
+                Navigator.of(context).pop();
+                Navigator.of(context).pushNamed('/whatcanyousmell');
+              },
             ),
             ListTile(
               title: Text('What can you See?'),
               leading: Icon(Icons.home),
+              onTap: () {
+                Navigator.of(context).pop();
+                Navigator.of(context).pushNamed('/whatcanyousee');
+              },
             ),
             ListTile(
               title: Text('What can you Hear?'),
               leading: Icon(Icons.phone),
+              onTap: () {
+                Navigator.of(context).pop();
+                Navigator.of(context).pushNamed('/whatcanyouhear');
+              },
             ),
             ListTile(
               title: Text('What can you Taste?'),
               leading: Icon(Icons.fastfood),
+              onTap: () {
+                Navigator.of(context).pop();
+                Navigator.of(context).pushNamed('/whatcanyoutaste');
+              },
             ),
             Divider(),
             ListTile(
@@ -118,7 +142,7 @@ class _HomePageState extends State<HomePage> {
       ),
       body: Container(
         child: Center(
-          child: Text('center'),
+          child: Text('Home Page'),
         ),
       ),
     );
