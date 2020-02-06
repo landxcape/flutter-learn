@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_tts/flutter_tts.dart';
 
 class WhoAreYou extends StatefulWidget {
   @override
@@ -8,10 +9,16 @@ class WhoAreYou extends StatefulWidget {
 class _WhoAreYouState extends State<WhoAreYou> {
   String gender = '';
 
+  final FlutterTts flutterTts = FlutterTts();
+
   onImageTap(String gender) {
     setState(() {
       this.gender = '$gender!';
     });
+  }
+
+  speakUp(String text) async {
+    await flutterTts.speak(text);
   }
 
   @override
@@ -42,6 +49,7 @@ class _WhoAreYouState extends State<WhoAreYou> {
                   onTap: () {
                     print('boy');
                     onImageTap('Boy');
+                    speakUp('I am a $gender');
                   },
                   child: Image.asset(
                     'assets/images/gender/boy.png',
@@ -54,6 +62,7 @@ class _WhoAreYouState extends State<WhoAreYou> {
                   onTap: () {
                     print('girl');
                     onImageTap('Girl');
+                    speakUp('I am a $gender');
                   },
                   child: Image.asset(
                     'assets/images/gender/girl.png',
