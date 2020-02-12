@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_tts/flutter_tts.dart';
 
 class OurSenseOrgans extends StatefulWidget {
   @override
@@ -11,35 +12,45 @@ class _OurSenseOrgansState extends State<OurSenseOrgans> {
   String onHand = '';
   String onEars = '';
   String onTongue = '';
+  final FlutterTts flutterTts = FlutterTts();
+
+  speakUp(String text) async {
+    await flutterTts.speak(text);
+  }
 
   onTapEyes() {
     setState(() {
       onEyes = 'Eyes\nEyes helps us See.';
     });
+    speakUp(onEyes);
   }
 
   onTapNose() {
     setState(() {
       onNose = 'Nose\nNose helps us Smell.';
     });
+    speakUp(onNose);
   }
 
   onTapHand() {
     setState(() {
       onHand = 'Hand\nHand is how we Feel.';
     });
+    speakUp(onHand);
   }
 
   onTapEars() {
     setState(() {
       onEars = 'Ears\nEars helps us Hear.';
     });
+    speakUp(onEars);
   }
 
   onTapTongue() {
     setState(() {
-      onTongue = 'Tongue\nTongue helps Taste.';
+      onTongue = 'Tongue\nTongue helps us Taste.';
     });
+    speakUp(onTongue);
   }
 
   @override
@@ -51,9 +62,7 @@ class _OurSenseOrgansState extends State<OurSenseOrgans> {
       body: ListView(
         children: <Widget>[
           GestureDetector(
-            onTap: () {
-              onTapEyes();
-            },
+            onTap: onTapEyes,
             child: Image.asset(
               'assets/images/sense_organs/eyes.png',
               fit: BoxFit.scaleDown,
@@ -66,9 +75,7 @@ class _OurSenseOrgansState extends State<OurSenseOrgans> {
           ),
           Text(''),
           GestureDetector(
-            onTap: () {
-              onTapNose();
-            },
+            onTap: onTapNose,
             child: Image.asset(
               'assets/images/sense_organs/nose.png',
               fit: BoxFit.scaleDown,
@@ -81,9 +88,7 @@ class _OurSenseOrgansState extends State<OurSenseOrgans> {
           ),
           Text(''),
           GestureDetector(
-            onTap: () {
-              onTapHand();
-            },
+            onTap: onTapHand,
             child: Image.asset(
               'assets/images/sense_organs/hand.png',
               fit: BoxFit.scaleDown,
@@ -96,9 +101,7 @@ class _OurSenseOrgansState extends State<OurSenseOrgans> {
           ),
           Text(''),
           GestureDetector(
-            onTap: () {
-              onTapEars();
-            },
+            onTap: onTapEars,
             child: Image.asset(
               'assets/images/sense_organs/ears.png',
               fit: BoxFit.scaleDown,
@@ -111,9 +114,7 @@ class _OurSenseOrgansState extends State<OurSenseOrgans> {
           ),
           Text(''),
           GestureDetector(
-            onTap: () {
-              onTapTongue();
-            },
+            onTap: onTapTongue,
             child: Image.asset(
               'assets/images/sense_organs/tongue.png',
               fit: BoxFit.scaleDown,

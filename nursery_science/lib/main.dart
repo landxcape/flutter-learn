@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
+import 'login_page.dart';
 import 'who_are_you.dart';
 import 'our_sense_organs.dart';
 import 'what_can_you_smell.dart';
@@ -26,6 +27,7 @@ class _MyAppState extends State<MyApp> {
               : null),
       home: HomePage(),
       routes: <String, WidgetBuilder>{
+        "/loginpage": (BuildContext context) => LoginPage(),
         "/whoareyou": (BuildContext context) => WhoAreYou(),
         "/oursenseorgans": (BuildContext context) => OurSenseOrgans(),
         "/whatcanyousmell": (BuildContext context) => WhatCanYouSmell(),
@@ -133,18 +135,14 @@ class _HomePageState extends State<HomePage> {
             ),
             Divider(),
             ListTile(
-              title: Text('Close'),
-              leading: Icon(Icons.close),
+              title: Text('Logout'),
+              leading: Icon(Icons.exit_to_app),
               onTap: () => Navigator.of(context).pop(),
             ),
           ],
         ),
       ),
-      body: Container(
-        child: Center(
-          child: Text('Home Page'),
-        ),
-      ),
+      body: LoginPage(),
     );
   }
 }

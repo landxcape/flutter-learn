@@ -13,7 +13,7 @@ class _WhoAreYouState extends State<WhoAreYou> {
 
   onImageTap(String gender) {
     setState(() {
-      this.gender = '$gender!';
+      this.gender = '$gender';
     });
   }
 
@@ -36,7 +36,7 @@ class _WhoAreYouState extends State<WhoAreYou> {
           ),
           Text('', textScaleFactor: 3.0),
           Text(
-            'I am a $gender',
+            'I am a $gender!',
             textAlign: TextAlign.center,
             style: TextStyle(fontSize: 30.0),
           ),
@@ -69,6 +69,21 @@ class _WhoAreYouState extends State<WhoAreYou> {
                     fit: BoxFit.scaleDown,
                   ),
                 ),
+              ),
+            ],
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: <Widget>[
+              Radio(
+                value: 'Boy',
+                groupValue: gender,
+                onChanged: null,
+              ),
+              Radio(
+                value: 'Girl',
+                groupValue: gender,
+                onChanged: null,
               ),
             ],
           ),
