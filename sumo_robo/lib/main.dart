@@ -11,14 +11,18 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   var testDirection;
+  double degreesPast = 0;
   String baseUrl = 'http://192.168.4.1/sumo_commands';
 
   JoystickDirectionCallback onDirectionChanged(
       double degrees, double throttle) {
     // print('degrees :${degrees.toStringAsFixed(2)}, throttle:${throttle.toStringAsFixed(2)}');
-
+    if ((degreesPast - degrees).abs() > 160) {
+      throttle *= 0.70;
+    }
     _sumoCommandGetRequest(
         degrees.toStringAsFixed(0), throttle.toStringAsFixed(2));
+    degreesPast = degrees;
   }
 
   _sumoCommandGetRequest(String degrees, String throttle) async {
@@ -46,7 +50,7 @@ class _MyAppState extends State<MyApp> {
         body: Container(
           child: JoystickView(
             size: 300,
-            interval: Duration(milliseconds: 20),
+            interval: Duration(milliseconds: 30),
             backgroundColor: Colors.black54,
             innerCircleColor: Colors.black87,
             onDirectionChanged: onDirectionChanged,
