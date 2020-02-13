@@ -17,7 +17,7 @@ class _MyAppState extends State<MyApp> {
   JoystickDirectionCallback onDirectionChanged(
       double degrees, double throttle) {
     // print('degrees :${degrees.toStringAsFixed(2)}, throttle:${throttle.toStringAsFixed(2)}');
-    if ((degreesPast - degrees).abs() > 160) {
+    if ((degreesPast - degrees).abs() > 10) {
       throttle *= 0.70;
     }
     _sumoCommandGetRequest(
@@ -50,7 +50,7 @@ class _MyAppState extends State<MyApp> {
         body: Container(
           child: JoystickView(
             size: 300,
-            interval: Duration(milliseconds: 30),
+            interval: Duration(milliseconds: 20),
             backgroundColor: Colors.black54,
             innerCircleColor: Colors.black87,
             onDirectionChanged: onDirectionChanged,
