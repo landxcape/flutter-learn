@@ -38,14 +38,26 @@ class _WhatCanYouSeeState extends State<WhatCanYouSee> {
       body: ListView.builder(
         itemCount: seeItems.length,
         itemBuilder: (BuildContext context, int index) {
-          return GestureDetector(
-            child: Image.asset(
-              seeItems[index]['path'],
-              fit: BoxFit.scaleDown,
+          return Container(
+            margin: EdgeInsets.all(10.0),
+            child: GestureDetector(
+              child: Image.asset(
+                seeItems[index]['path'],
+                width: MediaQuery.of(context).size.width,
+                height: MediaQuery.of(context).size.width,
+                fit: BoxFit.scaleDown,
+              ),
+              onTap: () {
+                seeCheck(index);
+              },
             ),
-            onTap: () {
-              seeCheck(index);
-            },
+            decoration: BoxDecoration(
+              border: Border.all(
+                color: Colors.pink,
+                width: 3.0,
+              ),
+              borderRadius: BorderRadius.circular(10.0),
+            ),
           );
         },
       ),

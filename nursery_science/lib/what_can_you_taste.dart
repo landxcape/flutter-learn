@@ -38,14 +38,26 @@ class _WhatCanYouTasteState extends State<WhatCanYouTaste> {
       body: ListView.builder(
         itemCount: tasteItems.length,
         itemBuilder: (BuildContext context, int index) {
-          return GestureDetector(
-            child: Image.asset(
-              tasteItems[index]['path'],
-              fit: BoxFit.scaleDown,
+          return Container(
+            margin: EdgeInsets.all(10.0),
+            child: GestureDetector(
+              child: Image.asset(
+                tasteItems[index]['path'],
+                width: MediaQuery.of(context).size.width,
+                height: MediaQuery.of(context).size.width,
+                fit: BoxFit.scaleDown,
+              ),
+              onTap: () {
+                tasteCheck(index);
+              },
             ),
-            onTap: () {
-              tasteCheck(index);
-            },
+            decoration: BoxDecoration(
+              border: Border.all(
+                color: Colors.pink,
+                width: 3.0,
+              ),
+              borderRadius: BorderRadius.circular(10.0),
+            ),
           );
         },
       ),
