@@ -110,6 +110,13 @@ class _HomePageState extends State<HomePage> {
                 Navigator.of(context).popAndPushNamed('/whatcanyoutaste');
               },
             ),
+            ListTile(
+              title: Text('Match Same Pictures'),
+              leading: Icon(Icons.picture_in_picture),
+              onTap: () {
+                Navigator.of(context).popAndPushNamed('/matchpictures');
+              },
+            ),
             Divider(),
             ListTile(
               title: Text('Logout'),

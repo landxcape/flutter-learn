@@ -9,6 +9,7 @@ import 'what_can_you_smell.dart';
 import 'what_can_you_see.dart';
 import 'what_can_you_hear.dart';
 import 'what_can_you_taste.dart';
+import 'match_same_pictures.dart';
 
 void main() => runApp(MyApp());
 
@@ -36,6 +37,7 @@ class _MyAppState extends State<MyApp> {
         "/whatcanyousee": (BuildContext context) => WhatCanYouSee(),
         "/whatcanyouhear": (BuildContext context) => WhatCanYouHear(),
         "/whatcanyoutaste": (BuildContext context) => WhatCanYouTaste(),
+        "/matchpictures": (BuildContext context) => MatchPictures(),
       },
     );
   }
