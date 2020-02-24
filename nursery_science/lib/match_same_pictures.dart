@@ -66,7 +66,7 @@ class _MatchTableState extends State<MatchTable> {
                 .map((organ) => _buildDragTarget(organ))
                 .toList()
                   ..shuffle(Random()),
-          )
+          ),
         ],
       ),
     );
@@ -94,6 +94,11 @@ class _MatchTableState extends State<MatchTable> {
             fit: BoxFit.scaleDown,
           ),
         ),
+        // childWhenDragging: Container(
+        //   color: Colors.transparent,
+        //   height: MediaQuery.of(context).size.width * 0.25,
+        //   width: MediaQuery.of(context).size.width * 0.25,
+        // ),
       ),
     );
   }
@@ -111,11 +116,19 @@ class _MatchTableState extends State<MatchTable> {
               maxHeight: MediaQuery.of(context).size.width * 0.3,
               maxWidth: MediaQuery.of(context).size.width * 0.3,
             ),
-            child: Icon(
-              Icons.check,
-              size: 50.0,
+            child: Stack(
+              children: <Widget>[
+                Image.asset(
+                  senseOrgans[organ],
+                  fit: BoxFit.scaleDown,
+                ),
+                Icon(
+                  Icons.check,
+                  size: 50.0,
+                  color: Colors.green,
+                ),
+              ],
             ),
-            color: Colors.lightGreen,
           );
         } else if (correct == 'false') {
           return Container(
@@ -124,11 +137,19 @@ class _MatchTableState extends State<MatchTable> {
               maxHeight: MediaQuery.of(context).size.width * 0.3,
               maxWidth: MediaQuery.of(context).size.width * 0.3,
             ),
-            child: Icon(
-              Icons.clear,
-              size: 50.0,
+            child: Stack(
+              children: <Widget>[
+                Image.asset(
+                  senseOrgans[organ],
+                  fit: BoxFit.scaleDown,
+                ),
+                Icon(
+                  Icons.clear,
+                  size: 50.0,
+                  color: Colors.red,
+                ),
+              ],
             ),
-            color: Colors.red,
           );
         } else {
           return Container(
