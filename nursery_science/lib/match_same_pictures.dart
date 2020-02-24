@@ -48,19 +48,20 @@ class _MatchTableState extends State<MatchTable> {
   @override
   Widget build(BuildContext context) {
     return Container(
+      margin: EdgeInsets.symmetric(horizontal: 10.0),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
           Column(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
-            crossAxisAlignment: CrossAxisAlignment.end,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: senseOrgans.keys
                 .map((organ) => _buildDraggableImages(organ))
                 .toList(),
           ),
           Column(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.end,
             children: senseOrgans.keys
                 .map((organ) => _buildDragTarget(organ))
                 .toList()
@@ -103,7 +104,6 @@ class _MatchTableState extends State<MatchTable> {
 
     return DragTarget(
       builder: (BuildContext context, List<String> accepted, List rejected) {
-        print('accepted = $accepted');
         if (correct == 'true') {
           return Container(
             alignment: Alignment.center,
