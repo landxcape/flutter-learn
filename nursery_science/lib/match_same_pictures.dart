@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
+import 'dart:math';
+import 'package:audioplayers/audio_cache.dart';
+
 void main() => runApp(MatchPictures());
 
 class MatchPictures extends StatefulWidget {
@@ -9,13 +12,13 @@ class MatchPictures extends StatefulWidget {
 }
 
 class _MatchPicturesState extends State<MatchPictures> {
-  List<Map<String, Object>> senseOrgans = [
-    {'organ': 'eyes', 'path': 'assets/images/sense_organs/eyes.png'},
-    {'organ': 'nose', 'path': 'assets/images/sense_organs/nose.png'},
-    {'organ': 'hand', 'path': 'assets/images/sense_organs/hand.png'},
-    {'organ': 'ears', 'path': 'assets/images/sense_organs/ears.png'},
-    {'organ': 'tongue', 'path': 'assets/images/sense_organs/tongue.png'},
-  ];
+  Map senseOrgans = {
+    'eyes': 'assets/images/sense_organs/eyes.png',
+    'nose': 'assets/images/sense_organs/nose.png',
+    'hand': 'assets/images/sense_organs/hand.png',
+    'ears': 'assets/images/sense_organs/ears.png',
+    'tongue': 'assets/images/sense_organs/tongue.png',
+  };
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +30,7 @@ class _MatchPicturesState extends State<MatchPictures> {
 }
 
 class MatchTable extends StatefulWidget {
-  final List<Map<String, Object>> senseOrgans;
+  final Map senseOrgans;
 
   @override
   _MatchTableState createState() => _MatchTableState(senseOrgans: senseOrgans);
@@ -36,7 +39,9 @@ class MatchTable extends StatefulWidget {
 }
 
 class _MatchTableState extends State<MatchTable> {
-  List<Map<String, Object>> senseOrgans;
+  Map senseOrgans;
+  final Map<String, bool> score = {};
+  AudioCache _audioController = AudioCache();
 
   _MatchTableState({this.senseOrgans});
 
@@ -44,74 +49,114 @@ class _MatchTableState extends State<MatchTable> {
   Widget build(BuildContext context) {
     return Container(
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: <Widget>[
-          Expanded(
-            flex: 1,
-            child: ListView.builder(
-              itemCount: senseOrgans.length,
-              itemBuilder: (BuildContext context, int index) {
-                return Container(
-                  constraints: BoxConstraints(
-                    maxHeight: MediaQuery.of(context).size.width * 0.1,
-                    maxWidth: MediaQuery.of(context).size.width * 0.1,
-                  ),
-                  child: Draggable(
-                    child: Image.asset(
-                      senseOrgans[index]['path'],
-                      fit: BoxFit.scaleDown,
-                    ),
-                    feedback: Container(
-                      constraints: BoxConstraints(
-                        maxHeight: MediaQuery.of(context).size.width * 0.1,
-                        maxWidth: MediaQuery.of(context).size.width * 0.1,
-                      ),
-                      child: Image.asset(
-                        senseOrgans[index]['path'],
-                        fit: BoxFit.scaleDown,
-                      ),
-                    ),
-                  ),
-                );
-              },
-            ),
+          Column(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: senseOrgans.keys
+                .map((organ) => _buildDraggableImages(organ))
+                .toList(),
           ),
-          Expanded(
-            flex: 2,
-            child: Container(),
-          ),
-          Expanded(
-            flex: 1,
-            child: ListView.builder(
-              itemCount: senseOrgans.length,
-              itemBuilder: (BuildContext context, int index) {
-                return Container(
-                  constraints: BoxConstraints(
-                    maxHeight: MediaQuery.of(context).size.width * 0.1,
-                    maxWidth: MediaQuery.of(context).size.width * 0.1,
-                  ),
-                  child: Draggable(
-                    child: Image.asset(
-                      senseOrgans[index]['path'],
-                      fit: BoxFit.contain,
-                    ),
-                    feedback: Container(
-                      constraints: BoxConstraints(
-                        maxHeight: MediaQuery.of(context).size.width * 0.1,
-                        maxWidth: MediaQuery.of(context).size.width * 0.1,
-                      ),
-                      child: Image.asset(
-                        senseOrgans[index]['path'],
-                        fit: BoxFit.scaleDown,
-                      ),
-                    ),
-                  ),
-                );
-              },
-            ),
-          ),
+          Column(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: senseOrgans.keys
+                .map((organ) => _buildDragTarget(organ))
+                .toList()
+                  ..shuffle(Random()),
+          )
         ],
       ),
+    );
+  }
+
+  Widget _buildDraggableImages(organ) {
+    return Container(
+      constraints: BoxConstraints(
+        maxHeight: MediaQuery.of(context).size.width * 0.3,
+        maxWidth: MediaQuery.of(context).size.width * 0.3,
+      ),
+      child: Draggable(
+        data: organ.toString(),
+        child: Image.asset(
+          senseOrgans[organ],
+          fit: BoxFit.scaleDown,
+        ),
+        feedback: Container(
+          constraints: BoxConstraints(
+            maxHeight: MediaQuery.of(context).size.width * 0.3,
+            maxWidth: MediaQuery.of(context).size.width * 0.3,
+          ),
+          child: Image.asset(
+            senseOrgans[organ],
+            fit: BoxFit.scaleDown,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildDragTarget(organ) {
+    String correct = '';
+    bool tried = false;
+
+    return DragTarget(
+      builder: (BuildContext context, List<String> accepted, List rejected) {
+        print('accepted = $accepted');
+        if (correct == 'true') {
+          return Container(
+            alignment: Alignment.center,
+            constraints: BoxConstraints(
+              maxHeight: MediaQuery.of(context).size.width * 0.3,
+              maxWidth: MediaQuery.of(context).size.width * 0.3,
+            ),
+            child: Icon(
+              Icons.check,
+              size: 50.0,
+            ),
+            color: Colors.lightGreen,
+          );
+        } else if (correct == 'false') {
+          return Container(
+            alignment: Alignment.center,
+            constraints: BoxConstraints(
+              maxHeight: MediaQuery.of(context).size.width * 0.3,
+              maxWidth: MediaQuery.of(context).size.width * 0.3,
+            ),
+            child: Icon(
+              Icons.clear,
+              size: 50.0,
+            ),
+            color: Colors.red,
+          );
+        } else {
+          return Container(
+            constraints: BoxConstraints(
+              maxHeight: MediaQuery.of(context).size.width * 0.3,
+              maxWidth: MediaQuery.of(context).size.width * 0.3,
+            ),
+            child: Image.asset(
+              senseOrgans[organ],
+              fit: BoxFit.scaleDown,
+            ),
+            height: MediaQuery.of(context).size.width * 0.3,
+            width: MediaQuery.of(context).size.width * 0.3,
+          );
+        }
+      },
+      onAccept: (String data) {
+        if (!tried) {
+          if (data == organ) {
+            _audioController.play('sounds/correct_ding.mp3');
+            correct = 'true';
+          } else {
+            _audioController.play('sounds/wrong_buzzer.mp3');
+            correct = 'false';
+          }
+          tried = true;
+        }
+      },
     );
   }
 }

@@ -10,17 +10,19 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  var testDirection;
+  bool isLights = false;
+  bool isHorn = false;
+  // var testDirection;
+  double maxThrottle = 0.7;
   double degreesPast = 0;
   String baseUrl = 'http://192.168.4.1/sumo_commands';
-  double maxThrottle = 0.7;
 
   double _map(
       double x, double inMin, double inMax, double outMin, double outMax) {
     return (x - inMin) * (outMax - outMin) / (inMax - inMin) + outMin;
   }
 
-  JoystickDirectionCallback onDirectionChanged(
+  JoystickDirectionCallback _onDirectionChanged(
       double degrees, double throttle) {
     // print('degrees :${degrees.toStringAsFixed(2)}, throttle:${throttle.toStringAsFixed(2)}');
 
@@ -41,6 +43,18 @@ class _MyAppState extends State<MyApp> {
     Map<String, String> headers = response.headers;
     String contentType = headers['content-type'];
     String json = response.body;
+  }
+
+  _lightsRequest(String lights) async {
+    String url = '$baseUrl?lights=$lights';
+    print('$url');
+    Response response = await get(url);
+  }
+
+  _hornRequest(String horn) async {
+    String url = '$baseUrl?horn=$horn';
+    print('$url');
+    Response response = await get(url);
   }
 
   @override
@@ -73,13 +87,51 @@ class _MyAppState extends State<MyApp> {
                   ),
                 ),
                 Expanded(
-                  flex: 4,
+                  flex: 2,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: <Widget>[
+                      IconButton(
+                        iconSize: 100.0,
+                        icon: Icon(
+                            isLights ? Icons.highlight_off : Icons.highlight),
+                        onPressed: () {
+                          setState(() {
+                            isLights = !isLights;
+                            print(isLights);
+                          });
+                          _lightsRequest(isLights ? '1' : '0');
+                        },
+                      ),
+                      GestureDetector(
+                        child: IconButton(
+                          iconSize: 100.0,
+                          icon: Icon(Icons.volume_up),
+                          color: Colors.indigoAccent,
+                          onPressed: () {},
+                        ),
+                        onLongPressStart: (_) {
+                          isHorn = true;
+                          print(isHorn);
+                          _hornRequest('1');
+                        },
+                        onLongPressEnd: (_) {
+                          isHorn = false;
+                          print(isHorn);
+                          _hornRequest('0');
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+                Expanded(
+                  flex: 6,
                   child: JoystickView(
                     size: 300,
                     interval: Duration(milliseconds: 20),
                     backgroundColor: Colors.black54,
                     innerCircleColor: Colors.black87,
-                    onDirectionChanged: onDirectionChanged,
+                    onDirectionChanged: _onDirectionChanged,
                   ),
                 ),
               ],
