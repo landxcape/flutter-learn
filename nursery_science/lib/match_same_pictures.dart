@@ -40,7 +40,6 @@ class MatchTable extends StatefulWidget {
 
 class _MatchTableState extends State<MatchTable> {
   Map senseOrgans;
-  final Map<String, bool> score = {};
   AudioCache _audioController = AudioCache();
 
   _MatchTableState({this.senseOrgans});
@@ -52,20 +51,26 @@ class _MatchTableState extends State<MatchTable> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
-          Column(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: senseOrgans.keys
-                .map((organ) => _buildDraggableImages(organ))
-                .toList(),
+          Expanded(
+            flex: 1,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: senseOrgans.keys
+                  .map((organ) => _buildDraggableImages(organ))
+                  .toList(),
+            ),
           ),
-          Column(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: senseOrgans.keys
-                .map((organ) => _buildDragTarget(organ))
-                .toList()
-                  ..shuffle(Random()),
+          Expanded(
+            flex: 1,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: senseOrgans.keys
+                  .map((organ) => _buildDragTarget(organ))
+                  .toList()
+                    ..shuffle(Random()),
+            ),
           ),
         ],
       ),
@@ -73,12 +78,15 @@ class _MatchTableState extends State<MatchTable> {
   }
 
   Widget _buildDraggableImages(organ) {
+    double contentWidth = MediaQuery.of(context).size.width * 0.3;
+
     return Container(
       constraints: BoxConstraints(
-        maxHeight: MediaQuery.of(context).size.width * 0.3,
-        maxWidth: MediaQuery.of(context).size.width * 0.3,
+        maxHeight: contentWidth,
+        maxWidth: contentWidth,
       ),
       child: Draggable(
+        onDragCompleted: () {},
         data: organ.toString(),
         child: Image.asset(
           senseOrgans[organ],
@@ -86,19 +94,14 @@ class _MatchTableState extends State<MatchTable> {
         ),
         feedback: Container(
           constraints: BoxConstraints(
-            maxHeight: MediaQuery.of(context).size.width * 0.3,
-            maxWidth: MediaQuery.of(context).size.width * 0.3,
+            maxHeight: contentWidth,
+            maxWidth: contentWidth,
           ),
           child: Image.asset(
             senseOrgans[organ],
             fit: BoxFit.scaleDown,
           ),
         ),
-        // childWhenDragging: Container(
-        //   color: Colors.transparent,
-        //   height: MediaQuery.of(context).size.width * 0.25,
-        //   width: MediaQuery.of(context).size.width * 0.25,
-        // ),
       ),
     );
   }
@@ -106,15 +109,17 @@ class _MatchTableState extends State<MatchTable> {
   Widget _buildDragTarget(organ) {
     String correct = '';
     bool tried = false;
+    double contentWidth = MediaQuery.of(context).size.width * 0.3;
 
     return DragTarget(
       builder: (BuildContext context, List<String> accepted, List rejected) {
         if (correct == 'true') {
+          tried = true;
           return Container(
             alignment: Alignment.center,
             constraints: BoxConstraints(
-              maxHeight: MediaQuery.of(context).size.width * 0.3,
-              maxWidth: MediaQuery.of(context).size.width * 0.3,
+              maxHeight: contentWidth,
+              maxWidth: contentWidth,
             ),
             child: Stack(
               children: <Widget>[
@@ -134,8 +139,8 @@ class _MatchTableState extends State<MatchTable> {
           return Container(
             alignment: Alignment.center,
             constraints: BoxConstraints(
-              maxHeight: MediaQuery.of(context).size.width * 0.3,
-              maxWidth: MediaQuery.of(context).size.width * 0.3,
+              maxHeight: contentWidth,
+              maxWidth: contentWidth,
             ),
             child: Stack(
               children: <Widget>[
@@ -154,15 +159,15 @@ class _MatchTableState extends State<MatchTable> {
         } else {
           return Container(
             constraints: BoxConstraints(
-              maxHeight: MediaQuery.of(context).size.width * 0.3,
-              maxWidth: MediaQuery.of(context).size.width * 0.3,
+              maxHeight: contentWidth,
+              maxWidth: contentWidth,
             ),
             child: Image.asset(
               senseOrgans[organ],
               fit: BoxFit.scaleDown,
             ),
-            height: MediaQuery.of(context).size.width * 0.3,
-            width: MediaQuery.of(context).size.width * 0.3,
+            height: contentWidth,
+            width: contentWidth,
           );
         }
       },
@@ -175,7 +180,8 @@ class _MatchTableState extends State<MatchTable> {
             _audioController.play('sounds/wrong_buzzer.mp3');
             correct = 'false';
           }
-          tried = true;
+          // tried = true; // no second try
+          tried = false; // multiple tries
         }
       },
     );
