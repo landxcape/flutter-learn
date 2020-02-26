@@ -45,23 +45,27 @@ class LoginPageState extends State<LoginPage> {
                       ),
                     ),
                   ),
-                  Container(
-                    alignment: Alignment.centerRight,
-                    padding: EdgeInsets.symmetric(vertical: 10.0),
-                    child: FlatButton(
-                      onPressed: () {},
-                      padding: EdgeInsets.all(10.0),
-                      color: Colors.transparent,
-                      textColor: Colors.pink,
-                      splashColor: Colors.blue,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30.0)),
-                      child: Text(
-                        'Forgot Password?',
-                        textAlign: TextAlign.right,
-                        style: TextStyle(color: Colors.pink),
+                  Row(
+                    children: [
+                      Container(
+                        alignment: Alignment.centerRight,
+                        padding: EdgeInsets.symmetric(vertical: 10.0),
+                        child: FlatButton(
+                          onPressed: () {},
+                          padding: EdgeInsets.all(10.0),
+                          color: Colors.transparent,
+                          textColor: Colors.pink,
+                          splashColor: Colors.blue,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(30.0)),
+                          child: Text(
+                            'Forgot Password?',
+                            textAlign: TextAlign.right,
+                            style: TextStyle(color: Colors.pink),
+                          ),
+                        ),
                       ),
-                    ),
+                    ],
                   ),
                   Container(
                     padding: EdgeInsets.all(2.0),

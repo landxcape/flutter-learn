@@ -24,7 +24,7 @@ class _MatchPicturesState extends State<MatchPictures> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text('Match Same Pictures')),
-      body: MatchTable(senseOrgans: senseOrgans),
+      body: SafeArea(child: MatchTable(senseOrgans: senseOrgans)),
     );
   }
 }
