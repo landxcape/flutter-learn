@@ -21,6 +21,18 @@ class _MatchPicturesState extends State<MatchPictures> {
     'tongue': 'assets/images/sense_organs/tongue.png',
   };
 
+  List<Map<String, String>> matchTest = [
+    {
+      'eyes': 'assets/images/sense_organs/eyes.png',
+      'nose': 'assets/images/sense_organs/nose.png',
+      'hand': 'assets/images/sense_organs/hand.png',
+      'ears': 'assets/images/sense_organs/ears.png',
+      'tongue': 'assets/images/sense_organs/tongue.png',
+    },
+    {},
+    {},
+  ];
+
   @override
   Widget build(BuildContext context) {
     SystemChrome.setPreferredOrientations([
@@ -28,27 +40,49 @@ class _MatchPicturesState extends State<MatchPictures> {
     ]);
     return Scaffold(
       // appBar: AppBar(title: Text('Match Same Pictures')),
-      body: SafeArea(child: MatchTable(senseOrgans: senseOrgans)),
+      body: SafeArea(
+          child: MatchTable(
+        senseOrgans: senseOrgans,
+        matchTest: matchTest,
+      )),
     );
   }
 }
 
 class MatchTable extends StatefulWidget {
   final Map senseOrgans;
+  final List<Map<String, String>> matchTest;
 
   @override
-  _MatchTableState createState() => _MatchTableState(senseOrgans: senseOrgans);
+  _MatchTableState createState() =>
+      _MatchTableState(senseOrgans: senseOrgans, matchTest: matchTest);
 
-  MatchTable({this.senseOrgans});
+  MatchTable({this.senseOrgans, this.matchTest});
 }
 
 class _MatchTableState extends State<MatchTable> {
   Map senseOrgans;
-  Map<String, bool> score = {};
-  int _maxLives = 3;
+  List<Map<String, String>> matchTest;
+
+  static int _maxLifes = 3;
+  int randomShuffle = 0;
+  int _score = 0;
+  int _remainingLifes = _maxLifes;
+  int _level = 0;
+
+  Map<String, String> _scoreOrgans = {};
+  Random random = new Random();
   AudioCache _audioController = AudioCache();
 
-  _MatchTableState({this.senseOrgans});
+  int _getScore() {
+    int score = 0;
+    _scoreOrgans.values.forEach((value) {
+      if (value == 'correct') score++;
+    });
+    return score;
+  }
+
+  _MatchTableState({this.senseOrgans, this.matchTest});
 
   @override
   Widget build(BuildContext context) {
@@ -56,7 +90,58 @@ class _MatchTableState extends State<MatchTable> {
       mainAxisAlignment: MainAxisAlignment.start,
       children: <Widget>[
         Expanded(
-          flex: 1,
+          flex: 2,
+          child: _buildScoreLifes(),
+        ),
+        Expanded(
+          flex: 9,
+          child: SingleChildScrollView(
+            child: LimitedBox(
+              maxHeight: MediaQuery.of(context).size.height * (9.8 / 12.5),
+              child: Container(
+                margin: EdgeInsets.symmetric(horizontal: 10.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    Expanded(
+                      flex: 1,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: senseOrgans.keys
+                            .map((item) => _buildDraggables(item))
+                            .toList(),
+                      ),
+                    ),
+                    Expanded(
+                      flex: 1,
+                      child: Column(
+                        // key: ValueKey(1),
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: matchTest[_level]
+                            .keys
+                            .map((target) => _buildDragTargets(target))
+                            .toList()
+                              ..shuffle(Random(randomShuffle)),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildScoreLifes() {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[
+        Flexible(
+          flex: 3,
           child: Container(
             child: RichText(
               text: TextSpan(
@@ -87,12 +172,50 @@ class _MatchTableState extends State<MatchTable> {
             ),
           ),
         ),
-        Expanded(
-          flex: 1,
+        Flexible(
+          flex: 2,
+          child: Container(
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                tileMode: TileMode.mirror,
+                colors: [
+                  Colors.white,
+                  Colors.pink,
+                  Colors.white,
+                ],
+              ),
+            ),
+            child: RichText(
+              text: TextSpan(
+                  text: 'Level ',
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 20.0,
+                    fontWeight: FontWeight.bold,
+                    fontStyle: FontStyle.italic,
+                  ),
+                  children: <TextSpan>[
+                    TextSpan(
+                      text: '${_level + 1}',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 30.0,
+                        fontWeight: FontWeight.bold,
+                        fontStyle: FontStyle.italic,
+                      ),
+                    )
+                  ]),
+            ),
+          ),
+        ),
+        Flexible(
+          flex: 3,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               Expanded(
+                flex: 1,
                 child: Container(
                   alignment: Alignment.centerRight,
                   decoration: BoxDecoration(
@@ -111,7 +234,7 @@ class _MatchTableState extends State<MatchTable> {
                   ),
                   child: RichText(
                     text: TextSpan(
-                      text: ' :Score ',
+                      text: '$_score :Score ',
                       style: TextStyle(
                         color: Colors.black,
                         fontSize: 25.0,
@@ -123,8 +246,8 @@ class _MatchTableState extends State<MatchTable> {
                 ),
               ),
               Expanded(
+                flex: 1,
                 child: Container(
-                  alignment: Alignment.centerLeft,
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
                       tileMode: TileMode.mirror,
@@ -141,25 +264,51 @@ class _MatchTableState extends State<MatchTable> {
                   ),
                   child: Row(
                     children: <Widget>[
-                      RichText(
-                        text: TextSpan(
-                          text: ' Lifes: ',
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 25.0,
-                            fontWeight: FontWeight.bold,
-                            fontStyle: FontStyle.italic,
+                      Expanded(
+                        flex: 2,
+                        child: Container(
+                          alignment: Alignment.centerLeft,
+                          child: RichText(
+                            textAlign: TextAlign.center,
+                            text: TextSpan(
+                              text: ' Lifes: ',
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 25.0,
+                                fontWeight: FontWeight.bold,
+                                fontStyle: FontStyle.italic,
+                              ),
+                            ),
                           ),
                         ),
                       ),
-                      LimitedBox(
-                        maxWidth: 100.0,
-                        maxHeight: 100.0,
-                        child: ListView.builder(
-                          scrollDirection: Axis.horizontal,
-                          itemCount: _maxLives,
-                          itemBuilder: (BuildContext context, int index) =>
-                              Icon(Icons.favorite),
+                      Expanded(
+                        flex: 2,
+                        child: _remainingLifes > 0
+                            ? ListView.builder(
+                                scrollDirection: Axis.horizontal,
+                                itemCount: _remainingLifes,
+                                itemBuilder:
+                                    (BuildContext context, int index) =>
+                                        Icon(Icons.favorite),
+                              )
+                            : Container(),
+                      ),
+                      Expanded(
+                        flex: 1,
+                        child: Container(
+                          alignment: Alignment.centerRight,
+                          child: GestureDetector(
+                            child: Icon(Icons.refresh),
+                            onTap: () {
+                              setState(() {
+                                _scoreOrgans.clear();
+                                _remainingLifes = _maxLifes;
+                                _score = 0;
+                                _level = 0;
+                              });
+                            },
+                          ),
                         ),
                       ),
                     ],
@@ -169,95 +318,57 @@ class _MatchTableState extends State<MatchTable> {
             ],
           ),
         ),
-        Expanded(
-          flex: 10,
-          child: SingleChildScrollView(
-            child: LimitedBox(
-              maxHeight: MediaQuery.of(context).size.height * (9.8 / 12.5),
-              child: Container(
-                margin: EdgeInsets.symmetric(horizontal: 10.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    Expanded(
-                      flex: 1,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: senseOrgans.keys
-                            .map((organ) => _buildDraggableImages(organ))
-                            .toList(),
-                      ),
-                    ),
-                    Expanded(
-                      flex: 1,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: senseOrgans.keys
-                            .map((organ) => _buildDragTarget(organ))
-                            .toList()
-                              ..shuffle(Random()),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-        ),
       ],
     );
   }
 
-  Widget _buildDraggableImages(organ) {
+  Widget _buildDraggables(item) {
     double contentWidth = MediaQuery.of(context).size.width * 0.3;
 
     return Draggable(
       onDragCompleted: () {},
-      data: organ.toString(),
+      data: item.toString(),
       child: Container(
         constraints: BoxConstraints(
-          maxHeight: contentWidth,
+          maxHeight: contentWidth / 2,
           maxWidth: contentWidth,
         ),
         child: Image.asset(
-          senseOrgans[organ],
+          senseOrgans[item],
           fit: BoxFit.scaleDown,
         ),
       ),
       feedback: Container(
         constraints: BoxConstraints(
-          maxHeight: contentWidth,
+          maxHeight: contentWidth / 2,
           maxWidth: contentWidth,
         ),
         child: Image.asset(
-          senseOrgans[organ],
+          senseOrgans[item],
           fit: BoxFit.scaleDown,
         ),
       ),
     );
   }
 
-  Widget _buildDragTarget(organ) {
-    String correct = '';
+  Widget _buildDragTargets(target) {
     bool tried = false;
     double contentWidth = MediaQuery.of(context).size.width * 0.3;
 
     return DragTarget(
       builder: (BuildContext context, List<String> accepted, List rejected) {
-        if (correct == 'true') {
+        if (_scoreOrgans[target] == 'correct') {
           tried = true;
           return Container(
             alignment: Alignment.center,
             constraints: BoxConstraints(
-              maxHeight: contentWidth,
+              maxHeight: contentWidth / 2,
               maxWidth: contentWidth,
             ),
             child: Stack(
               children: <Widget>[
                 Image.asset(
-                  senseOrgans[organ],
+                  matchTest[_level][target],
                   fit: BoxFit.scaleDown,
                 ),
                 Icon(
@@ -268,17 +379,17 @@ class _MatchTableState extends State<MatchTable> {
               ],
             ),
           );
-        } else if (correct == 'false') {
+        } else if (_scoreOrgans[target] == 'wrong') {
           return Container(
             alignment: Alignment.center,
             constraints: BoxConstraints(
-              maxHeight: contentWidth,
+              maxHeight: contentWidth / 2,
               maxWidth: contentWidth,
             ),
             child: Stack(
               children: <Widget>[
                 Image.asset(
-                  senseOrgans[organ],
+                  matchTest[_level][target],
                   fit: BoxFit.scaleDown,
                 ),
                 Icon(
@@ -292,11 +403,11 @@ class _MatchTableState extends State<MatchTable> {
         } else {
           return Container(
             constraints: BoxConstraints(
-              maxHeight: contentWidth,
+              maxHeight: contentWidth / 2,
               maxWidth: contentWidth,
             ),
             child: Image.asset(
-              senseOrgans[organ],
+              matchTest[_level][target],
               fit: BoxFit.scaleDown,
             ),
             height: contentWidth,
@@ -306,19 +417,68 @@ class _MatchTableState extends State<MatchTable> {
       },
       onAccept: (String data) {
         if (!tried) {
-          if (data == organ) {
+          if (data == target) {
             _audioController.play('sounds/correct_ding.mp3');
-            correct = 'true';
+            _scoreOrgans[target] = 'correct';
+            setState(() {
+              _score++;
+
+              if (_getScore() >= matchTest[_level].length) {
+                _level++;
+                _showDialog('You Win!!');
+              }
+            });
           } else {
             _audioController.play('sounds/wrong_buzzer.mp3');
-            correct = 'false';
+            _scoreOrgans[target] = 'wrong';
             setState(() {
-              _maxLives--;
+              _remainingLifes--;
+
+              if (_remainingLifes <= 0) {
+                _score = 0;
+                _level = 0;
+                _showDialog('You Lose!!');
+              }
             });
           }
           // tried = true; // no second try
           tried = false; // multiple tries
         }
+      },
+    );
+  }
+
+  void _showDialog(String title) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: RichText(
+            textAlign: TextAlign.center,
+            text: TextSpan(
+              text: title,
+              style: TextStyle(
+                color: Colors.red,
+                fontSize: 25.0,
+                fontWeight: FontWeight.bold,
+                fontStyle: FontStyle.italic,
+              ),
+            ),
+          ),
+          actions: <Widget>[
+            FlatButton(
+              onPressed: () {
+                setState(() {
+                  _scoreOrgans.clear();
+                  _remainingLifes = _maxLifes;
+                  randomShuffle = random.nextInt(100);
+                  Navigator.pop(context);
+                });
+              },
+              child: Text('Restart'),
+            ),
+          ],
+        );
       },
     );
   }
