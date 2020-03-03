@@ -29,8 +29,13 @@ class _MatchPicturesState extends State<MatchPictures> {
       'ears': 'assets/images/sense_organs/ears.png',
       'tongue': 'assets/images/sense_organs/tongue.png',
     },
-    {},
-    {},
+    {
+      'eyes': 'Eyes',
+      'nose': 'Nose',
+      'hand': 'Hand',
+      'ears': 'Ears',
+      'tongue': 'Tongue',
+    }
   ];
 
   @override
@@ -306,6 +311,7 @@ class _MatchTableState extends State<MatchTable> {
                                 _remainingLifes = _maxLifes;
                                 _score = 0;
                                 _level = 0;
+                                randomShuffle = random.nextInt(100);
                               });
                             },
                           ),
@@ -351,6 +357,28 @@ class _MatchTableState extends State<MatchTable> {
     );
   }
 
+  Widget _buildTargetContaints(target, _level) {
+    if (_level == 0) {
+      return Image.asset(
+        matchTest[0][target],
+        fit: BoxFit.scaleDown,
+      );
+    } else if (_level == 1) {
+      return RichText(
+        textAlign: TextAlign.center,
+        text: TextSpan(
+          text: matchTest[1][target],
+          style: TextStyle(
+            color: Colors.blue,
+            fontSize: 20.0,
+          ),
+        ),
+      );
+    } else {
+      return Container();
+    }
+  }
+
   Widget _buildDragTargets(target) {
     bool tried = false;
     double contentWidth = MediaQuery.of(context).size.width * 0.3;
@@ -367,10 +395,7 @@ class _MatchTableState extends State<MatchTable> {
             ),
             child: Stack(
               children: <Widget>[
-                Image.asset(
-                  matchTest[_level][target],
-                  fit: BoxFit.scaleDown,
-                ),
+                _buildTargetContaints(target, _level),
                 Icon(
                   Icons.check,
                   size: 50.0,
@@ -388,10 +413,7 @@ class _MatchTableState extends State<MatchTable> {
             ),
             child: Stack(
               children: <Widget>[
-                Image.asset(
-                  matchTest[_level][target],
-                  fit: BoxFit.scaleDown,
-                ),
+                _buildTargetContaints(target, _level),
                 Icon(
                   Icons.clear,
                   size: 50.0,
@@ -406,10 +428,7 @@ class _MatchTableState extends State<MatchTable> {
               maxHeight: contentWidth / 2,
               maxWidth: contentWidth,
             ),
-            child: Image.asset(
-              matchTest[_level][target],
-              fit: BoxFit.scaleDown,
-            ),
+            child: _buildTargetContaints(target, _level),
             height: contentWidth,
             width: contentWidth,
           );
@@ -422,10 +441,19 @@ class _MatchTableState extends State<MatchTable> {
             _scoreOrgans[target] = 'correct';
             setState(() {
               _score++;
-
               if (_getScore() >= matchTest[_level].length) {
                 _level++;
-                _showDialog('You Win!!');
+                _scoreOrgans.clear();
+                randomShuffle = random.nextInt(100);
+                if (_level < matchTest.length)
+                  _showDialog('You Win!!');
+                else {
+                  _showDialog(
+                      'Congratulations!!\n\nYou Won!!!\nScore: $_score\nLifes Left: $_remainingLifes');
+                  _level = 0;
+                  _score = 0;
+                  _remainingLifes = _maxLifes;
+                }
               }
             });
           } else {
@@ -433,10 +461,12 @@ class _MatchTableState extends State<MatchTable> {
             _scoreOrgans[target] = 'wrong';
             setState(() {
               _remainingLifes--;
+              if (_score > 0) _score--;
 
               if (_remainingLifes <= 0) {
                 _score = 0;
                 _level = 0;
+                _remainingLifes = _maxLifes;
                 _showDialog('You Lose!!');
               }
             });
@@ -470,12 +500,11 @@ class _MatchTableState extends State<MatchTable> {
               onPressed: () {
                 setState(() {
                   _scoreOrgans.clear();
-                  _remainingLifes = _maxLifes;
-                  randomShuffle = random.nextInt(100);
+                  // randomShuffle = random.nextInt(100);
                   Navigator.pop(context);
                 });
               },
-              child: Text('Restart'),
+              child: Text('Next'),
             ),
           ],
         );
