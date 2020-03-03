@@ -389,6 +389,13 @@ class _MatchTableState extends State<MatchTable> {
           tried = true;
           return Container(
             alignment: Alignment.center,
+            decoration: BoxDecoration(
+              border: Border.all(
+                color: Colors.pink,
+                width: 3.0,
+              ),
+              borderRadius: BorderRadius.circular(5.0),
+            ),
             constraints: BoxConstraints(
               maxHeight: contentWidth / 2,
               maxWidth: contentWidth,
@@ -407,6 +414,13 @@ class _MatchTableState extends State<MatchTable> {
         } else if (_scoreOrgans[target] == 'wrong') {
           return Container(
             alignment: Alignment.center,
+            decoration: BoxDecoration(
+              border: Border.all(
+                color: Colors.pink,
+                width: 3.0,
+              ),
+              borderRadius: BorderRadius.circular(5.0),
+            ),
             constraints: BoxConstraints(
               maxHeight: contentWidth / 2,
               maxWidth: contentWidth,
@@ -424,6 +438,13 @@ class _MatchTableState extends State<MatchTable> {
           );
         } else {
           return Container(
+            decoration: BoxDecoration(
+              border: Border.all(
+                color: Colors.pink,
+                width: 3.0,
+              ),
+              borderRadius: BorderRadius.circular(5.0),
+            ),
             constraints: BoxConstraints(
               maxHeight: contentWidth / 2,
               maxWidth: contentWidth,
