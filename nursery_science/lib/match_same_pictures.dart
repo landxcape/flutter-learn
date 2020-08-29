@@ -46,10 +46,11 @@ class _MatchPicturesState extends State<MatchPictures> {
     return Scaffold(
       // appBar: AppBar(title: Text('Match Same Pictures')),
       body: SafeArea(
-          child: MatchTable(
-        senseOrgans: senseOrgans,
-        matchTest: matchTest,
-      )),
+        child: MatchTable(
+          senseOrgans: senseOrgans,
+          matchTest: matchTest,
+        ),
+      ),
     );
   }
 }
@@ -359,18 +360,22 @@ class _MatchTableState extends State<MatchTable> {
 
   Widget _buildTargetContaints(target, _level) {
     if (_level == 0) {
-      return Image.asset(
-        matchTest[0][target],
-        fit: BoxFit.scaleDown,
+      return Container(
+        child: Image.asset(
+          matchTest[0][target],
+          fit: BoxFit.scaleDown,
+        ),
       );
     } else if (_level == 1) {
-      return RichText(
-        textAlign: TextAlign.center,
-        text: TextSpan(
-          text: matchTest[1][target],
-          style: TextStyle(
-            color: Colors.blue,
-            fontSize: 20.0,
+      return Container(
+        alignment: Alignment.center,
+        child: RichText(
+          text: TextSpan(
+            text: matchTest[1][target],
+            style: TextStyle(
+              color: Colors.blue,
+              fontSize: 20.0,
+            ),
           ),
         ),
       );

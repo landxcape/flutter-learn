@@ -100,7 +100,7 @@ class _MyAppState extends State<MyApp> {
                             isLights = !isLights;
                             print(isLights);
                           });
-                          _lightsRequest(isLights ? '1' : '0');
+                          _lightsRequest(isLights ? 'ON' : 'OFF');
                         },
                       ),
                       GestureDetector(
@@ -113,12 +113,12 @@ class _MyAppState extends State<MyApp> {
                         onLongPressStart: (_) {
                           isHorn = true;
                           print(isHorn);
-                          _hornRequest('1');
+                          _hornRequest('ON');
                         },
                         onLongPressEnd: (_) {
                           isHorn = false;
                           print(isHorn);
-                          _hornRequest('0');
+                          _hornRequest('OFF');
                         },
                       ),
                     ],
